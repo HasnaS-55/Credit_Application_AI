@@ -1,17 +1,15 @@
-import { User } from "../models/auth.models.js";
+import { Admin } from "../models/admins.model.js";
 
 export default async function isAdmin(req, res, next) {
   try {
-    const email = req.user;
-    const { role } = await User.findOne(email, { role: 1 });
-    if (!{ role }) {
+    const { id: userId } = req.user;
+    const admin  = await Admin.findById(userId);
+    if (!admin ) {
       return res
         .status(403)
         .json({ message: "Access denied. User not found." });
     }
-    if (role !== "admin") {
-      return res.status(403).json({ message: "You are not Admin" });
-    }
+    
     next();
   } catch (err) {
     res

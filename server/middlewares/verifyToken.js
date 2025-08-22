@@ -8,7 +8,7 @@ export default function verifyToken(req, res, next) {
       return res.status(401).json({ message: "Unauthorized No token" })
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decoded.email) {
+    if (!decoded.id) {
       return res.status(401).json({ message: "Not authorized, invalid token structure" })
     }
 
