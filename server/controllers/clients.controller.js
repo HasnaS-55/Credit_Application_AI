@@ -21,7 +21,7 @@ export const registerClient = async (req, res) => {
       return res.status(400).json({ message: "Password doesn't match" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const admin = await Client.create({
+    const client = await Client.create({
       firstName,
       lastName,
       email,
@@ -32,11 +32,11 @@ export const registerClient = async (req, res) => {
       zipCode,
       password: hashedPassword,
     });
-    const { password: _, ...clientWithoutPassword } = admin;
+    const { password: _, ...clientWithoutPassword } = client;
 
     res
       .status(201)
-      .json({ message: "User registred successfully", clientWithoutPassword });
+      .json({ message: "User registred successfully", client: clientWithoutPassword });
   } catch (err) {
     res
       .status(500)
@@ -47,7 +47,7 @@ export const registerClient = async (req, res) => {
 export const loginClient = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const client = await Client.findOne(email);
+    const client = await Client.findOne({ email }).lean()
     if (!client) {
       return res.status(401).json({ message: "Invalide credentials" });
     }
@@ -84,5 +84,37 @@ export const logoutClient = (req, res) => {
         res.status(200).json({ message: "Logged out successfully" })
     } catch (err) {
         res.status(500).json({ message: "Error logging out", error: err.message })
+    }
+}
+
+export const updateClient = async (req, res) => {
+    try {
+        const id = req.params
+        
+    } catch (err) {
+        
+    }
+}
+
+export const getClient = async (req, res) => {
+    try {
+        const { id: clientId } = req.user
+        const clientData = await Client.findById(clientId, {password: 0}).lean()
+        if (!clientData) {
+            return res.status(404).json({ message: "Client profile not found"})
+        }
+        res.status(200).json({ client: clientData })
+    } catch (err) {
+        res.status(500).json({ message: "Error getting user", error: err.message })
+    }
+}
+
+
+export const getAllClients = async (req, res) => {
+    try {
+        const clients = await Client.find().select('-password').lean()
+        res.status(200).json({message: "Clients found", clients: clients})
+    } catch (err) {
+        res.status(500).json({ message: err.message })
     }
 }

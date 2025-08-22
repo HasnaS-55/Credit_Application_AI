@@ -23,7 +23,7 @@ export const registerAdmin = async (req, res) => {
     })
     const { password: _, ...adminWithoutPassword } = admin
     
-    res.status(201).json({ message: "User registred successfully", adminWithoutPassword });
+    res.status(201).json({ message: "User registred successfully", admin: adminWithoutPassword });
   } catch (err) {
     res
       .status(500)
@@ -84,7 +84,7 @@ export const getAdmin = async (req, res) => {
       return res.status(404).json({ message: "Admin not found" });
     }
 
-    res.status(200).json({ adminData });
+    res.status(200).json({ admin: adminData });
   } catch (err) {
     res.status(500).json({ message: "Error getting user", error: err.message });
   }
@@ -111,7 +111,7 @@ export const updateAdmin = async (req, res) => {
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" })
     }
-    res.status(200).json({ message: "Admin updated successfully", admin });
+    res.status(200).json({ message: "Admin updated successfully", admin: admin });
   } catch (err) {
     res
       .status(500)
