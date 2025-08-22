@@ -18,5 +18,5 @@ const clientSchema = new mongoose.Schema(
   }
 )
 
-export const Client = mongoose.model("Admin", clientSchema)
+export const Client = mongoose.model("Client", clientSchema)
 

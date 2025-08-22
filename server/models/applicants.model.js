@@ -1,8 +1,10 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 
-const applicantSchema = new mongoose.Schema({
-    nom: {type: String, required: true, trim: true},
-    email: {type: String, required: true, unique: true, trim: true},
-    niveau: {type: String, required: true, trim: true, enum: []},
+const applicationSchema = new mongoose.Schema({
+    clientId: {type: mongoose.Schema.Types.ObjectId, ref: "Client", required: true},
+    monthly_income: {type: Number, required: true, trim: true},
+    monthly_income: {type: Number, required: true, trim: true},
+    employment_type: {type: String, required: true, trim: true},
+    categoty: {type: Number, required: true, trim: true},
 })
