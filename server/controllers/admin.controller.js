@@ -1,4 +1,5 @@
 import { Admin } from "../models/admins.model.js";
+import { Client } from "../models/clients.model.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import bcrypt from 'bcryptjs'
@@ -115,6 +116,16 @@ export const updateAdmin = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Error getting users", error: err.message });
+      .json({ message: "Error getting users", error: err.message })
   }
 }
+
+
+export const getAllClients = async (req, res) => {
+  try {
+    const clients = await Client.find().select("-password").lean();
+    res.status(200).json({ message: "Clients found", clients: clients });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
