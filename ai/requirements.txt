@@ -1,0 +1,9 @@
+python-dotenv
+bson
+pydantic
+openai
+requests
+flask
+flask-cors
+pymongo
+weasyprint
