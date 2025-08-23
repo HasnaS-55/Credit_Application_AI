@@ -5,7 +5,7 @@ import "dotenv/config";
 import { connectDB } from "./db/db-connection.js";
 import applicationsRoutes from "./routes/applicants.routes.js";
 import adminsRoutes from "./routes/admins.routes.js";
-import statsRoutes from "./routes/stats.routes.js";
+import clientsRoutes from "./routes/clients.routes.js"
 
 const app = express();
 
@@ -40,7 +40,7 @@ app.use(cookieParser())
 app.use("api/admins", adminsRoutes)
 app.use("api/clients", clientsRoutes)
 app.use("api/applicants", applicationsRoutes)
-app.use("api/stats", statsRoutes)
+
 
 const port = process.env.PORT
 app.listen(port, () => {

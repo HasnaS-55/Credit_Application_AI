@@ -1,6 +1,5 @@
 import express from 'express'
-import verifyToken from '..middlewares/verifyToken.js'
-import isAdmin from '../middlewares/isAdmin.js'
+import verifyToken from '../middlewares/verifyToken.js'
 import { registerClient, loginClient, logoutClient, getClient, updateClient } from '../controllers/clients.controller.js'
 
 

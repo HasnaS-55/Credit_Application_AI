@@ -1,9 +1,8 @@
-import { Applicant } from "../models/applicants.model";
+import { Applicant } from "../models/applicants.model.js";
 import "dotenv/config";
-import { Client } from "../models/clients.model";
+import { Client } from "../models/clients.model.js";
 import axios from "axios";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+
 
 export const createApplicant = async (req, res) => {
   try {

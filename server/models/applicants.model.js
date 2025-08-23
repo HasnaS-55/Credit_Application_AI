@@ -24,5 +24,5 @@ const applicationSchema = new mongoose.Schema(
 )
 
 
-export const Applicant = mongoose.models("Applicant", applicationSchema)
+export const Applicant = mongoose.model("Applicant", applicationSchema)
  

@@ -34,12 +34,10 @@ export const registerClient = async (req, res) => {
     });
     const { password: _, ...clientWithoutPassword } = client;
 
-    res
-      .status(201)
-      .json({
-        message: "User registred successfully",
-        client: clientWithoutPassword,
-      });
+    res.status(201).json({
+      message: "User registred successfully",
+      client: clientWithoutPassword,
+    });
   } catch (err) {
     res
       .status(500)
@@ -91,17 +89,17 @@ export const logoutClient = (req, res) => {
 
 export const updateClient = async (req, res) => {
   try {
-    const id = req.params.id
+    const id = req.params.id;
     const update = req.body;
     const allowed = [
-      'firstName',
-      'lastName',
-      'phone',
-      'cin',
-      'password',
-      'gender',
-      'location',
-      'zipCode'
+      "firstName",
+      "lastName",
+      "phone",
+      "cin",
+      "password",
+      "gender",
+      "location",
+      "zipCode",
     ];
     const isAllowed = Object.keys(update).every((key) => allowed.includes(key));
     if (!isAllowed) {
@@ -114,7 +112,9 @@ export const updateClient = async (req, res) => {
     const client = await Client.findByIdAndUpdate(id, update, {
       new: true,
       runValidators: true,
-    }).select("-password").lean()
+    })
+      .select("-password")
+      .lean();
     if (!client) {
       return res.status(404).json({ message: "Client not found" });
     }
@@ -124,9 +124,22 @@ export const updateClient = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Error getting users", error: err.message })
+      .json({ message: "Error getting users", error: err.message });
   }
 };
 
+export const getClient = async (req, res) => {
+  try {
+    const { id: clientId } = req.user;
+    const clientData = await Client.findById(clientId, { password: 0 }).lean();
+    if (!clientData) {
+      return res.status(404).json({ message: "Client not found" });
+    }
 
-
+    res.status(200).json({ client: clientData });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error getting users", error: err.message });
+  }
+};
