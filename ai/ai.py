@@ -1,7 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import os, json
 import google.generativeai as genai
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Literal, List
 
 
