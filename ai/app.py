@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify 
 from flask_cors import CORS
 
+from ai import evaluate_credit_request
 
 
 
@@ -13,11 +14,12 @@ def health():
     return jsonify({ "message": "OK"}), 200
 
 
-@app.route('/api/evaluate-credit' methods=['POST'])
+@app.route('/api/evaluate-credit', methods=['POST'])
 def evaluate_credit():
     try:
-        data = request.json
-
+        data = request.get_json(force=True)
+        evaluation = evaluate_credit_request(data)
+        return jsonify(evaluation.model_dump()), 200
     except Exception as e:
         return jsonify({ "error": str(e)}), 500
     
