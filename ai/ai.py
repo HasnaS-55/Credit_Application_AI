@@ -1,66 +1,39 @@
-from dotenv import load_dotenv, find_dotenv
-import os, json
-import google.generativeai as genai
-from pydantic import BaseModel
+import os,json
+from openai import OpenAI
+from pydantic import BaseModel, Field
 from typing import Literal, List
+from dotenv import load_dotenv
+
+load_dotenv()
+client = OpenAI(
+    base_url=os.getenv("OPENAI_BASE_URL"),
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
 
 
-load_dotenv(find_dotenv(), override=True)
+class CreditEvaluation(BaseModel):
+    decision: Literal["Approved", "Needs Manual Review", "Rejected"] = Field(description="The decision on the credit request ") # "Approved", "Needs Manual Review", "Rejected"
+    confidence: float = Field(description="The confidence in the decision")  # 0.0 to 1.0
+    reason: str = Field(description="The reason for the decision")
+    risk_factors: List[str] = Field(description="The risk factors for the credit request") # list of risk factors
+    positive_factors: List[str] = Field(description="The positive factors for the credit request") # list of positive factors
+    is_scammer: bool = Field(description="try to detect if he is scammer or not") # "This is a real user request"
 
-API_KEY = os.getenv("GEMINI_API_KEY")
-if not API_KEY:
-    raise RuntimeError("Missing GEMINI_API_KEY in .env")
 
-genai.configure(api_key=API_KEY)
-
-
-MODEL_NAME = "gemini-1.5-flash"   
-
-class Structure(BaseModel):
-    confidence: float
-    decision: Literal["Approved", "Needs Manual Review", "Rejected"]
-    positive_factors: List[str]
-    reason: str
-    risk_factors: List[str]
-    is_scammer: bool
-
-def evaluate_credit_request(data: dict) -> Structure:
-   
-    try:
-        model = genai.GenerativeModel(
-            MODEL_NAME,
-            generation_config={
-                
-                "response_mime_type": "application/json",
+def evaluate_credit_request(data):  
+    completion = client.beta.chat.completions.parse(
+        model="openai/gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a credit evaluation agent. You are given a credit request and you need to evaluate it. You need to return a JSON object with the following fields: decision, confidence, reason, risk_factors, positive_factors."},
+            {
+                "role": "user",
+                "content": "Evaluate the credit request for the user with the following information: " + json.dumps(data),
             },
-            system_instruction=(
-                "You are a credit evaluation agent. Return ONLY valid JSON with keys: "
-                "decision (Approved/Needs Manual Review/Rejected), confidence (0.0-1.0), "
-                "reason (str), risk_factors (list), positive_factors (list), is_scammer (boolean)."
-            ),
-        )
+        ],
+    response_format=CreditEvaluation,
+    temperature=0
 
-        prompt = (
-            "Evaluate the credit request and return ONLY JSON. "
-            "Here is the input JSON:\n" + json.dumps(data)
-        )
-
-        resp = model.generate_content(prompt)
-        payload = resp.text  
-
-        parsed = json.loads(payload)  
-        return Structure(**parsed)
-
-    except Exception as e:
-        print(f"[Gemini error] {e}")
-        return get_fallback_evaluation("AI evaluation temporarily unavailable")
-
-def get_fallback_evaluation(reason: str) -> Structure:
-    return Structure(
-        decision="Needs Manual Review",
-        confidence=0.5,
-        reason=reason,
-        risk_factors=["System maintenance"],
-        positive_factors=[],
-        is_scammer=False,
     )
+    evaluation = completion.choices[0].message.parsed
+    return evaluation
+
