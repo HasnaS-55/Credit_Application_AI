@@ -16,8 +16,8 @@ class CreditEvaluation(BaseModel):
     confidence: float = Field(description="The confidence in the decision")  # 0.0 to 1.0
     reason: str = Field(description="The reason for the decision")
     risk_factors: List[str] = Field(description="The risk factors for the credit request") # list of risk factors
-    positive_factors: List[str] = Field(description="The positive factors for the credit request") # list of positive factors
-    is_scammer: bool = Field(description="try to detect if he is scammer or not") # "This is a real user request"
+    positive_factors: List[str] = Field(description="The positive factors for the credit request") 
+    is_scammer: bool = Field(description="try to detect if he is scammer or not")
 
 
 def evaluate_credit_request(data):  
