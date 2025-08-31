@@ -3,7 +3,7 @@ import { CircleChevronRight } from 'lucide-react'
 
 export const Nav = () => {
   return (
-    <div className="flex justify-between items-center bg-[#D7E0CA] px-4 py-3 rounded-full">
+    <div className="flex w-[93%] justify-between items-center bg-[#D7E0CA] px-4 py-3 rounded-full mt-5">
       <div className="flex items-center">
         <a href="http://localhost:5173" target="_blank">
           <img src="credit-agency-logo-137000.png" className="w-10 h-10 "/>
